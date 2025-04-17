@@ -1,4 +1,4 @@
-# Canvas Game
+# Grow Game
 
 This project is a simple game built using HTML5 Canvas. 
 

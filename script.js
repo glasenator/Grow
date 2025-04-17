@@ -251,15 +251,11 @@ function updateGameState() {
         }
     });
 
-    // Update wing flap angle when the bird is moving
-    birds.forEach(bird => {
-        if (bird.targetX !== bird.x || bird.targetY !== bird.y) {
-            wingFlapAngle += wingFlapDirection * 0.1; // Increased wing flap speed
-            if (wingFlapAngle > Math.PI / 6 || wingFlapAngle < -Math.PI / 6) {
-                wingFlapDirection *= -1; // Reverse flap direction
-            }
-        }
-    });
+    // Update wing flap angle at a constant lower speed
+    wingFlapAngle += wingFlapDirection * 0.05; // Reduced wing flap speed
+    if (wingFlapAngle > Math.PI / 6 || wingFlapAngle < -Math.PI / 6) {
+        wingFlapDirection *= -1; // Reverse flap direction
+    }
 
     // Check for collisions between the circle and birds
     birds.forEach(bird => {

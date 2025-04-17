@@ -1,6 +1,8 @@
 # Grow Game
 
-This project is a simple game built using HTML5 Canvas. 
+This project is a simple game built using HTML5 Canvas.
+
+https://grow-bad40476109a.herokuapp.com/
 
 <img width="652" alt="growgame" src="https://github.com/user-attachments/assets/e2f18398-89ff-4af2-aa87-99ff571fc384" />
 

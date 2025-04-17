@@ -2,7 +2,8 @@
 
 This project is a simple game built using HTML5 Canvas. 
 
-<img width="794" alt="Screenshot 2025-04-17 at 4 38 29 PM" src="https://github.com/user-attachments/assets/62b91d21-2fee-4f29-adab-a50880f3e463" />
+<img width="652" alt="growgame" src="https://github.com/user-attachments/assets/e2f18398-89ff-4af2-aa87-99ff571fc384" />
+
 
 ## Project Structure
 

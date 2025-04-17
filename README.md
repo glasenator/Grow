@@ -1,6 +1,7 @@
 # Grow Game
 
 This project is a simple game built using HTML5 Canvas.
+The inclusion of PHP is just to get around Heroku's language deployment detection process.
 
 https://grow-bad40476109a.herokuapp.com/
 
@@ -15,12 +16,13 @@ https://grow-bad40476109a.herokuapp.com/
 ## Project Structure
 
 ```
-canvas-game
-├── src
-│   ├── index.html       # Main HTML document
-│   ├── script.js        # Game logic
-│   └── style.css        # Styles for the game
-└── README.md            # Project documentation
+grow
+├── composer.json
+├── index.php
+├── home.html       # Main HTML document
+├── script.js       # Game logic
+└── style.css       # Styles for the game
+└── README.md       # Project documentation
 ```
 
 ## Getting Started
@@ -29,11 +31,11 @@ To run the game, follow these steps:
 
 1. **Clone the repository**:
    ```
-   git clone <repository-url>
+   git clone grow
    cd canvas-game
    ```
 
-2. **Open the `index.html` file** in your web browser. You can do this by double-clicking the file or using a local server.
+2. **Open the `home.html` file** in your web browser. You can do this by double-clicking the file or using a local server.
 
 ## License
 

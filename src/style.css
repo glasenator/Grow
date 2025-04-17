@@ -1,0 +1,63 @@
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #000000; /* Changed background to black for better contrast */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+canvas {
+    display: block;
+    margin: 0 auto;
+    background-color: lightblue; /* Set canvas background to light blue */
+    border: 6px solid white; /* Set canvas border to white */
+    width: 600px;
+    height: 400px;
+}
+
+#gameTitle {
+    font-family: 'Pacifico', cursive;
+    color: white;
+    text-align: center;
+    margin: 20px 0;
+    margin-bottom: 20px; /* Add spacing between the title and the canvas */
+    font-size: 48px;
+}
+
+#controls {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 612px; /* Match the canvas width */
+}
+
+#controls button {
+    flex: 1; /* Make buttons take equal width */
+    font-family: Arial, sans-serif;
+    font-size: 32px; /* Increase font size for arrow icons */
+    padding: 20px; /* Increase padding for larger buttons */
+    border: 6px solid white; /* Add white 10px border */
+    background-color: black; /* Set background to black */
+    color: white; /* Set text color to white */
+    cursor: pointer;
+    text-align: center; /* Center the arrow icons */
+    transition: background-color 0.3s;
+}
+
+#controls button:active {
+    background-color: lightgray;
+}
+
+@media (max-width: 768px) {
+    canvas {
+        width: auto; /* Set width to auto */
+        height: 600px; /* Set height to 600px */
+    }
+}

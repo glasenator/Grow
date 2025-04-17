@@ -1,6 +1,6 @@
 # Canvas Game
 
-This project is a simple game built using HTML5 Canvas and the D3.js library for data visualization. 
+This project is a simple game built using HTML5 Canvas. 
 
 ## Project Structure
 
@@ -10,8 +10,6 @@ canvas-game
 │   ├── index.html       # Main HTML document
 │   ├── script.js        # Game logic
 │   └── style.css        # Styles for the game
-├── lib
-│   └── d3.min.js        # Minified D3.js library
 └── README.md            # Project documentation
 ```
 
@@ -27,14 +25,11 @@ To run the game, follow these steps:
 
 2. **Open the `index.html` file** in your web browser. You can do this by double-clicking the file or using a local server.
 
-## Dependencies
-
-- D3.js: This project uses the D3.js library for data manipulation and visualization. The library is included in the `lib` directory.
 
 ## Game Instructions
 
-- Use the arrow keys to control the game elements.
-- The objective of the game is to achieve [insert game objective here].
+- Use the arrow buttons or arrow keys on your keyboard to control the rain drop.
+- Avoid the birds and grow the grass.
 
 ## License
 

@@ -21,44 +21,24 @@
             <span>&rarr;</span> <!-- Right arrow icon -->
         </button>
     </div>
-    <div id="compassPermission" style="display: none; text-align: center; margin-top: 20px;">
-        <button id="requestCompass" style="font-size: 20px; padding: 10px;">Enable Compass</button>
-    </div>
     <script src="script.js"></script>
     <script>
-        // Show the compass permission overlay for iOS devices
+        // Show an alert to request compass access on mobile devices
         if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
             window.addEventListener('load', () => {
-                const compassPermissionDiv = document.getElementById('compassPermission');
-                const requestCompassButton = document.getElementById('requestCompass');
-
-                DeviceOrientationEvent.requestPermission()
-                    .then(permissionState => {
-                        if (permissionState === 'granted') {
-                            console.log('Compass access already granted.');
-                        } else {
-                            compassPermissionDiv.style.display = 'flex'; // Show the overlay
-                            requestCompassButton.addEventListener('click', () => {
-                                DeviceOrientationEvent.requestPermission()
-                                    .then(permissionState => {
-                                        if (permissionState === 'granted') {
-                                            compassPermissionDiv.style.display = 'none'; // Hide the overlay
-                                            console.log('Compass access granted.');
-                                        } else {
-                                            alert('Compass access denied. Controls may not work as intended.');
-                                        }
-                                    })
-                                    .catch(error => {
-                                        console.error('Error requesting compass access:', error);
-                                        alert('An error occurred while requesting compass access. Please check your browser settings.');
-                                    });
-                            });
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error checking compass access:', error);
-                        compassPermissionDiv.style.display = 'flex'; // Show the overlay if an error occurs
-                    });
+                const permissionAlert = confirm("This game uses your device's compass for controls. Do you want to enable it?");
+                if (permissionAlert) {
+                    DeviceOrientationEvent.requestPermission()
+                        .then(permissionState => {
+                            if (permissionState !== 'granted') {
+                                alert('Compass access denied. Controls may not work as intended.');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error requesting compass access:', error);
+                            alert(error);
+                        });
+                }
             });
         } else {
             console.warn('DeviceOrientationEvent or requestPermission is not supported on this device or browser.');

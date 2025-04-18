@@ -61,31 +61,3 @@ canvas {
         height: 600px; /* Set height to 600px */
     }
 }
-
-#compassPermission {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent black background */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000; /* Ensure it overlays on top of everything */
-}
-
-#compassPermission button {
-    font-size: 24px;
-    padding: 15px 30px;
-    background-color: white;
-    color: black;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-#compassPermission button:hover {
-    background-color: lightgray;
-}

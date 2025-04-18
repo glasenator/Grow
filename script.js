@@ -278,6 +278,34 @@ function updateGameState() {
     });
 }
 
+// Gyroscope control for mobile devices
+if (window.DeviceOrientationEvent) {
+    window.addEventListener('deviceorientation', (event) => {
+        const tiltLeftRight = event.gamma; // Gamma represents left/right tilt
+
+        if (tiltLeftRight < -10) { // Tilted to the right
+            circle.x -= circle.speed;
+            circleRotation = Math.min(circleRotation + 0.1, Math.PI / 4); // Rotate clockwise
+        } else if (tiltLeftRight > 10) { // Tilted to the left
+            circle.x += circle.speed;
+            circleRotation = Math.max(circleRotation - 0.1, -Math.PI / 4); // Rotate counterclockwise
+        }
+    });
+
+    // Request permission for iOS devices
+    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+        DeviceOrientationEvent.requestPermission()
+            .then(permissionState => {
+                if (permissionState === 'granted') {
+                    console.log('Gyroscope access granted.');
+                } else {
+                    console.warn('Gyroscope access denied.');
+                }
+            })
+            .catch(console.error);
+    }
+}
+
 let retryButtonListenerAdded = false; // Track if the retry button listener has been added
 
 function render() {

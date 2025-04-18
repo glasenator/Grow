@@ -6,6 +6,13 @@ if (!canvas || !ctx) {
     console.error('Canvas or context not found. Ensure the HTML file has a canvas element with id "gameCanvas".');
 }
 
+// Lock screen orientation to portrait mode
+if (screen.orientation && screen.orientation.lock) {
+    screen.orientation.lock('portrait').catch(error => {
+        console.warn('Failed to lock screen orientation:', error);
+    });
+}
+
 // Set canvas dimensions
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;

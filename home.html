@@ -21,10 +21,12 @@
             <span>&rarr;</span> <!-- Right arrow icon -->
         </button>
     </div>
-    <div id="compassPermission" style="display: none; text-align: center; margin-top: 20px;">
-        <span>Enable compass access to control the game:</span>
-        <button id="requestCompass" style="font-size: 20px; padding: 10px;">Yes</button>
-        <button id="denyCompass" style="font-size: 20px; padding: 10px;">No</button>
+    <div id="compassPermission" style="text-align: center; margin-top: 20px;">
+        <div>Enable compass access to control the game:</div>
+        <div>
+            <button id="requestCompass" style="font-size: 20px; padding: 10px;">Yes</button>
+            <button id="denyCompass" style="font-size: 20px; padding: 10px;">No</button>
+        </div>
     </div>
     <script src="script.js"></script>
     <script>
@@ -40,7 +42,6 @@
 
                 denyCompassButton.addEventListener('click', () => {
                     compassPermissionDiv.style.display = 'none'; // Hide the overlay
-                    startGame(); // Start the game after hiding the overlay
                 });
 
                 requestCompassButton.addEventListener('click', () => {
@@ -50,7 +51,6 @@
                                 compassPermissionDiv.style.display = 'none'; // Hide the overlay
                                 controlsDiv.style.display = 'none'; // Remove the arrow buttons
                                 console.log('Compass access granted.');
-                                startGame(); // Start the game after hiding the overlay
                             } else {
                                 alert('Compass access denied. Controls may not work as intended.');
                             }
@@ -63,7 +63,6 @@
             });
         } else {
             console.warn('DeviceOrientationEvent or requestPermission is not supported on this device or browser.');
-            startGame(); // Start the game immediately if permissions are not required
         }
     </script>
 </body>

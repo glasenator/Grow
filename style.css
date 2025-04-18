@@ -60,6 +60,14 @@ canvas {
         width: auto; /* Set width to auto */
         height: 600px; /* Set height to 600px */
     }
+    #gameTitle {
+        font-family: 'Pacifico', cursive;
+        color: white;
+        text-align: center;
+        margin: 10px 0;
+        margin-bottom: 10px; /* Add spacing between the title and the canvas */
+        font-size: 24px;
+    }
 }
 
 #compassPermission {
@@ -77,7 +85,6 @@ canvas {
     text-align: center;
     color: white; /* Make text legible */
     font-family: Arial, sans-serif;
-    padding: 20px;
 }
 
 #compassPermission span {

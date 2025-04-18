@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, orientation=portrait">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Grow</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -21,24 +21,34 @@
             <span>&rarr;</span> <!-- Right arrow icon -->
         </button>
     </div>
+    <div id="compassPermission" style="display: none; text-align: center; margin-top: 20px;">
+        <button id="requestCompass" style="font-size: 20px; padding: 10px;">Enable Compass</button>
+    </div>
     <script src="script.js"></script>
     <script>
-        // Show an alert to request compass access on mobile devices
+        // Show the compass permission overlay for iOS devices
         if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
             window.addEventListener('load', () => {
-                const permissionAlert = confirm("This game uses your device's compass for controls. Do you want to enable it?");
-                if (permissionAlert) {
+                const compassPermissionDiv = document.getElementById('compassPermission');
+                const requestCompassButton = document.getElementById('requestCompass');
+
+                compassPermissionDiv.style.display = 'flex'; // Show the overlay
+
+                requestCompassButton.addEventListener('click', () => {
                     DeviceOrientationEvent.requestPermission()
                         .then(permissionState => {
-                            if (permissionState !== 'granted') {
+                            if (permissionState === 'granted') {
+                                compassPermissionDiv.style.display = 'none'; // Hide the overlay
+                                console.log('Compass access granted.');
+                            } else {
                                 alert('Compass access denied. Controls may not work as intended.');
                             }
                         })
                         .catch(error => {
                             console.error('Error requesting compass access:', error);
-                            alert(error);
+                            alert('An error occurred while requesting compass access. Please check your browser settings.');
                         });
-                }
+                });
             });
         } else {
             console.warn('DeviceOrientationEvent or requestPermission is not supported on this device or browser.');

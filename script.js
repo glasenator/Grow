@@ -284,10 +284,10 @@ if (window.DeviceOrientationEvent) {
         const compassDirection = event.alpha; // Alpha represents the compass direction (0-360 degrees)
 
         if (compassDirection !== null) {
-            if (compassDirection > 180) { // Facing left
+            if (compassDirection < 180) { // Facing right
                 circle.x -= circle.speed;
                 circleRotation = Math.min(circleRotation + 0.1, Math.PI / 4); // Rotate clockwise
-            } else if (compassDirection < 180) { // Facing right
+            } else if (compassDirection > 180) { // Facing left
                 circle.x += circle.speed;
                 circleRotation = Math.max(circleRotation - 0.1, -Math.PI / 4); // Rotate counterclockwise
             }

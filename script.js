@@ -45,14 +45,24 @@ const moveRightButton = document.getElementById('moveRight');
 let moveLeftHeld = false;
 let moveRightHeld = false;
 
-// Event listeners for button presses
+// Event listeners for button presses (support mobile touch events)
 moveLeftButton.addEventListener('mousedown', () => moveLeftHeld = true);
 moveLeftButton.addEventListener('mouseup', () => moveLeftHeld = false);
 moveLeftButton.addEventListener('mouseleave', () => moveLeftHeld = false);
+moveLeftButton.addEventListener('touchstart', (e) => {
+    e.preventDefault(); // Prevent default touch behavior
+    moveLeftHeld = true;
+});
+moveLeftButton.addEventListener('touchend', () => moveLeftHeld = false);
 
 moveRightButton.addEventListener('mousedown', () => moveRightHeld = true);
 moveRightButton.addEventListener('mouseup', () => moveRightHeld = false);
 moveRightButton.addEventListener('mouseleave', () => moveRightHeld = false);
+moveRightButton.addEventListener('touchstart', (e) => {
+    e.preventDefault(); // Prevent default touch behavior
+    moveRightHeld = true;
+});
+moveRightButton.addEventListener('touchend', () => moveRightHeld = false);
 
 let gameRunning = false;
 let score = 0;

@@ -22,7 +22,9 @@
         </button>
     </div>
     <div id="compassPermission" style="display: none; text-align: center; margin-top: 20px;">
-        <button id="requestCompass" style="font-size: 20px; padding: 10px;">Enable Compass</button>
+        Enable compass access to control the game:
+        <button id="requestCompass" style="font-size: 20px; padding: 10px;">Yes</button>
+        <button id="denyCompass" style="font-size: 20px; padding: 10px;">No</button>
     </div>
     <script src="script.js"></script>
     <script>
@@ -31,14 +33,21 @@
             window.addEventListener('load', () => {
                 const compassPermissionDiv = document.getElementById('compassPermission');
                 const requestCompassButton = document.getElementById('requestCompass');
+                const denyCompassButton = document.getElementById('denyCompass');
+                const controlsDiv = document.getElementById('controls');
 
                 compassPermissionDiv.style.display = 'flex'; // Show the overlay
+
+                denyCompassButton.addEventListener('click', () => {
+                    compassPermissionDiv.style.display = 'none'; // Hide the overlay
+                });
 
                 requestCompassButton.addEventListener('click', () => {
                     DeviceOrientationEvent.requestPermission()
                         .then(permissionState => {
                             if (permissionState === 'granted') {
                                 compassPermissionDiv.style.display = 'none'; // Hide the overlay
+                                controlsDiv.style.display = 'none'; // Remove the arrow buttons
                                 console.log('Compass access granted.');
                             } else {
                                 alert('Compass access denied. Controls may not work as intended.');

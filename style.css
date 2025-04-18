@@ -70,14 +70,25 @@ canvas {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent black background */
     display: flex;
+    flex-direction: column; /* Arrange content vertically */
     justify-content: center;
     align-items: center;
     z-index: 1000; /* Ensure it overlays on top of everything */
+    text-align: center;
+    color: white; /* Make text legible */
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+#compassPermission span {
+    font-size: 20px; /* Increase font size for better readability */
+    margin-bottom: 20px; /* Add spacing below the text */
 }
 
 #compassPermission button {
-    font-size: 24px;
-    padding: 15px 30px;
+    font-size: 18px; /* Adjust font size */
+    padding: 10px 20px; /* Adjust padding for better button size */
+    margin: 10px; /* Add spacing between buttons */
     background-color: white;
     color: black;
     border: none;

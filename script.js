@@ -116,6 +116,13 @@ let gameOver = false; // Track if the game is over
 
 function startGame() {
     if (!canvas || !ctx) return; // Ensure canvas and context are valid
+
+    const compassPermissionDiv = document.getElementById('compassPermission');
+    if (compassPermissionDiv && compassPermissionDiv.style.display !== 'none') {
+        console.log('Waiting for compass permission overlay to be hidden.');
+        return; // Do not start the game until the overlay is hidden
+    }
+
     gameRunning = true;
     gameLoop();
 }

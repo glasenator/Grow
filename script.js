@@ -469,12 +469,6 @@ function render() {
     ctx.textAlign = 'left';
     ctx.fillText(`Level: ${level}`, 10, 40); // Adjusted position for larger font
 
-    // Remove the score rendering
-    // ctx.fillStyle = 'white';
-    // ctx.font = '24px Arial';
-    // ctx.textAlign = 'right';
-    // ctx.fillText(`Score: ${score}`, canvas.width - 10, 30);
-
     // Render game over screen if the game is over
     if (gameOver) {
         ctx.fillStyle = 'rgba(0, 0, 0, 0.7)'; // Semi-transparent black background

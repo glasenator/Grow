@@ -9,7 +9,7 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    /* height: 100vh; */
 }
 
 canvas {
@@ -17,8 +17,7 @@ canvas {
     margin: 0 auto;
     background-color: lightblue; /* Set canvas background to light blue */
     border: 6px solid white; /* Set canvas border to white */
-    width: 600px;
-    height: 400px;
+    max-width: 600px;
 }
 
 #gameTitle {
@@ -36,6 +35,9 @@ canvas {
     justify-content: space-between;
     width: 100%;
     max-width: 612px; /* Match the canvas width */
+    margin: 0 auto; /* Center the controls horizontally */
+    background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent background for better visibility */
+    z-index: 100; /* Ensure it stays above other elements */
 }
 
 #controls button {
@@ -58,7 +60,7 @@ canvas {
 @media (max-width: 768px) {
     canvas {
         width: auto; /* Set width to auto */
-        height: 600px; /* Set height to 600px */
+        height: 70vh;
     }
     #gameTitle {
         font-family: 'Pacifico', cursive;

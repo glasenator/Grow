@@ -21,7 +21,7 @@
             <span>&rarr;</span> <!-- Right arrow icon -->
         </button>
     </div>
-    <div id="compassPermission" style="text-align: center; margin-top: 20px;">
+    <div id="compassPermission" style="display: none; text-align: center; margin-top: 20px;">
         <div>Enable compass access to control the game:</div>
         <div>
             <button id="requestCompass" style="font-size: 20px; padding: 10px;">Yes</button>
@@ -30,8 +30,12 @@
     </div>
     <script src="script.js"></script>
     <script>
-        // Show the compass permission overlay for iOS devices
-        if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+        // Show the compass permission overlay for iOS devices on mobile only
+        function isMobileDevice() {
+            return /Mobi|Android/i.test(navigator.userAgent);
+        }
+
+        if (isMobileDevice() && typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
             window.addEventListener('load', () => {
                 const compassPermissionDiv = document.getElementById('compassPermission');
                 const requestCompassButton = document.getElementById('requestCompass');

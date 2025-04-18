@@ -114,6 +114,73 @@ let wingFlapDirection = 1; // 1 for down, -1 for up
 let borderFlashTimer = 0; // Timer to control the red border flash
 let gameOver = false; // Track if the game is over
 
+let shakeDuration = 0; // Duration of the shake effect
+let shakeIntensity = 5; // Intensity of the shake effect
+
+const birdSound = new Audio('bird.mp3'); // Load the bird sound file
+
+const dropSound = new Audio('drop.mp3'); // Load the drop sound file
+
+// Preload and unlock audio on user interaction
+function unlockAudio(audioElement) {
+    const unlock = () => {
+        audioElement.play().then(() => {
+            audioElement.pause();
+            audioElement.currentTime = 0; // Reset the audio to the beginning
+            document.removeEventListener('click', unlock);
+            document.removeEventListener('touchstart', unlock);
+        }).catch(error => console.error('Error unlocking audio:', error));
+    };
+
+    document.addEventListener('click', unlock);
+    document.addEventListener('touchstart', unlock);
+}
+
+// Unlock audio for drop and bird sounds
+unlockAudio(dropSound);
+unlockAudio(birdSound);
+
+// Ensure the audio file is fully loaded before playing
+dropSound.addEventListener('loadedmetadata', () => {
+    console.log('Drop sound loaded. Duration:', dropSound.duration);
+});
+
+birdSound.addEventListener('loadedmetadata', () => {
+    console.log('Bird sound loaded. Duration:', birdSound.duration);
+});
+
+function playRandomBirdSound() {
+    if (!isFinite(birdSound.duration) || birdSound.duration <= 0.25) {
+        console.error('Bird sound duration is not valid or too short.');
+        return;
+    }
+    const randomStartTime = Math.random() * (birdSound.duration - 0.25); // Random start time, leaving 0.25 seconds buffer
+    birdSound.currentTime = randomStartTime;
+    birdSound.play().catch(error => console.error('Error playing bird sound:', error));
+
+    // Stop the sound after 0.25 seconds
+    setTimeout(() => {
+        birdSound.pause();
+        birdSound.currentTime = 0; // Reset the audio to the beginning
+    }, 250);
+}
+
+function playRandomDropSound() {
+    if (!isFinite(dropSound.duration) || dropSound.duration <= 0.25) {
+        console.error('Drop sound duration is not valid or too short.');
+        return;
+    }
+    const potentialStartTimes = [.5, 1.5, 2.7]; // Potential start times for the drop sound
+    dropSound.currentTime = potentialStartTimes[Math.floor(Math.random() * potentialStartTimes.length)];
+    dropSound.play().catch(error => console.error('Error playing drop sound:', error));
+
+    // Stop the sound after 0.25 seconds
+    setTimeout(() => {
+        dropSound.pause();
+        dropSound.currentTime = 0; // Reset the audio to the beginning
+    }, 250);
+}
+
 function startGame() {
     if (!canvas || !ctx) return; // Ensure canvas and context are valid
     gameRunning = true;
@@ -158,6 +225,7 @@ function updateGameState() {
 
     // Check if the circle touches the bottom of the canvas
     if (circle.y + circle.radius >= canvas.height) {
+        playRandomDropSound(); // Play a random section of the drop sound
         score++; // Increment the score
 
         // Teleport the circle to a random spot at the top
@@ -276,6 +344,8 @@ function updateGameState() {
         if (distance < circle.radius + 20) { // 20 is the bird's radius
             lives--; // Decrease a life
             borderFlashTimer = 30; // Set the border flash timer
+            shakeDuration = 15; // Trigger the shake effect for 15 frames
+            playRandomBirdSound(); // Play a random segment of the bird sound
             if (lives <= 0) {
                 gameRunning = false; // Stop the game loop
                 gameOver = true; // Set game over state
@@ -324,6 +394,9 @@ if (window.DeviceOrientationEvent) {
 let retryButtonListenerAdded = false; // Track if the retry button listener has been added
 
 function render() {
+    // Apply the shake effect
+    applyShakeEffect();
+
     // Clear the canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -515,6 +588,17 @@ function shadeColor(color, percent) {
         G = (num >> 8 & 0x00FF) + amt,
         B = (num & 0x0000FF) + amt;
     return `#${(0x1000000 + (R < 255 ? (R < 1 ? 0 : R) : 255) * 0x10000 + (G < 255 ? (G < 1 ? 0 : G) : 255) * 0x100 + (B < 255 ? (B < 1 ? 0 : B) : 255)).toString(16).slice(1)}`;
+}
+
+function applyShakeEffect() {
+    if (shakeDuration > 0) {
+        const offsetX = (Math.random() * 2 - 1) * shakeIntensity;
+        const offsetY = (Math.random() * 2 - 1) * shakeIntensity;
+        canvas.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+        shakeDuration--;
+    } else {
+        canvas.style.transform = ''; // Reset the canvas position
+    }
 }
 
 startGame();

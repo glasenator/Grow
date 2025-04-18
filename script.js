@@ -278,17 +278,19 @@ function updateGameState() {
     });
 }
 
-// Gyroscope control for mobile devices
+// Compass control for mobile devices
 if (window.DeviceOrientationEvent) {
     window.addEventListener('deviceorientation', (event) => {
-        const tiltLeftRight = event.gamma; // Gamma represents left/right tilt
+        const compassDirection = event.alpha; // Alpha represents the compass direction (0-360 degrees)
 
-        if (tiltLeftRight < -10) { // Tilted to the right
-            circle.x -= circle.speed;
-            circleRotation = Math.min(circleRotation + 0.1, Math.PI / 4); // Rotate clockwise
-        } else if (tiltLeftRight > 10) { // Tilted to the left
-            circle.x += circle.speed;
-            circleRotation = Math.max(circleRotation - 0.1, -Math.PI / 4); // Rotate counterclockwise
+        if (compassDirection !== null) {
+            if (compassDirection > 180) { // Facing left
+                circle.x -= circle.speed;
+                circleRotation = Math.min(circleRotation + 0.1, Math.PI / 4); // Rotate clockwise
+            } else if (compassDirection < 180) { // Facing right
+                circle.x += circle.speed;
+                circleRotation = Math.max(circleRotation - 0.1, -Math.PI / 4); // Rotate counterclockwise
+            }
         }
     });
 
@@ -297,12 +299,15 @@ if (window.DeviceOrientationEvent) {
         DeviceOrientationEvent.requestPermission()
             .then(permissionState => {
                 if (permissionState === 'granted') {
-                    console.log('Gyroscope access granted.');
+                    console.log('Compass access granted.');
                 } else {
-                    console.warn('Gyroscope access denied.');
+                    console.warn('Compass access denied.');
                 }
             })
-            .catch(console.error);
+            .catch(error => {
+                console.error('Error requesting compass access:', error);
+                alert('An error occurred while requesting compass access. Please check your browser settings.');
+            });
     }
 }
 

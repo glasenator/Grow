@@ -21,23 +21,28 @@
             <span>&rarr;</span> <!-- Right arrow icon -->
         </button>
     </div>
+    <script src="script.js"></script>
     <script>
-        // Show an alert to request gyroscope permission on mobile devices
+        // Show an alert to request compass access on mobile devices
         if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
             window.addEventListener('load', () => {
-                const permissionAlert = confirm("This game uses your device's gyroscope for controls. Do you want to enable it?");
+                const permissionAlert = confirm("This game uses your device's compass for controls. Do you want to enable it?");
                 if (permissionAlert) {
                     DeviceOrientationEvent.requestPermission()
                         .then(permissionState => {
                             if (permissionState !== 'granted') {
-                                alert('Gyroscope access denied. Controls may not work as intended.');
+                                alert('Compass access denied. Controls may not work as intended.');
                             }
                         })
-                        .catch(() => alert('Error requesting gyroscope access.'));
+                        .catch(error => {
+                            console.error('Error requesting compass access:', error);
+                            alert(error);
+                        });
                 }
             });
+        } else {
+            console.warn('DeviceOrientationEvent or requestPermission is not supported on this device or browser.');
         }
     </script>
-    <script src="script.js"></script>
 </body>
 </html>

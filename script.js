@@ -16,7 +16,8 @@ const circle = {
     y: canvas.height - 10,
     radius: 20,
     color: 'blue',
-    speed: 4 // Increased the speed of the circle
+    speed: 4, // Increased the speed of the circle
+    isFlipped: false // Track if the circle is flipped
 };
 
 // Key state tracking
@@ -199,13 +200,20 @@ function gameLoop() {
 // Removed the ability to move the circle up or down
 function updateGameState() {
     // Move the circle horizontally based on key presses
-    if (keys.ArrowLeft || moveLeftHeld) {
+    if ((keys.ArrowLeft || moveLeftHeld) && !circle.isFlipped) {
         circle.x -= circle.speed;
         circleRotation = Math.min(circleRotation + 0.1, Math.PI / 4); // Rotate clockwise, max 45 degrees
+    } else if ((keys.ArrowLeft || moveLeftHeld) && circle.isFlipped) {
+        circle.x += circle.speed; // Reverse direction when flipped
+        circleRotation = Math.max(circleRotation - 0.1, -Math.PI / 4); // Rotate counterclockwise, max -45 degrees
     }
-    if (keys.ArrowRight || moveRightHeld) {
+
+    if ((keys.ArrowRight || moveRightHeld) && !circle.isFlipped) {
         circle.x += circle.speed;
         circleRotation = Math.max(circleRotation - 0.1, -Math.PI / 4); // Rotate counterclockwise, max -45 degrees
+    } else if ((keys.ArrowRight || moveRightHeld) && circle.isFlipped) {
+        circle.x -= circle.speed; // Reverse direction when flipped
+        circleRotation = Math.min(circleRotation + 0.1, Math.PI / 4); // Rotate clockwise, max 45 degrees
     }
 
     // Gradually rotate back to the original state if no input
@@ -222,6 +230,30 @@ function updateGameState() {
 
     // Prevent the circle from going out of bounds horizontally
     circle.x = Math.max(circle.radius, Math.min(canvas.width - circle.radius, circle.x));
+
+    // Check if the circle collides with any flower
+    grassBlades.forEach(blade => {
+        const flowerX = blade.x + 5; // Center of the flower
+        const flowerY = canvas.height - blade.height - 30; // Top of the flower
+        const distance = Math.sqrt((circle.x - flowerX) ** 2 + (circle.y - flowerY) ** 2);
+
+        if (distance < circle.radius + 10) { // 10 is the flower's radius
+            circle.speed = -Math.abs(circle.speed); // Reverse the direction of the circle
+            circle.isFlipped = true; // Mark the circle as flipped
+
+            // Push the circle to the left or right of the flower
+            if (circle.x < flowerX) {
+                circle.x = flowerX - (circle.radius + 10); // Push to the left
+            } else {
+                circle.x = flowerX + (circle.radius + 10); // Push to the right
+            }
+
+            setTimeout(() => {
+                circle.speed = Math.abs(circle.speed); // Restore the original direction after 200ms
+                circle.isFlipped = false; // Reset the flipped state
+            }, 200);
+        }
+    });
 
     // Check if the circle touches the bottom of the canvas
     if (circle.y + circle.radius >= canvas.height) {
@@ -241,7 +273,7 @@ function updateGameState() {
             x: lastCircleX - circle.radius, // Use the tracked x position
             height: 0, // Start with height 0 for animation
             targetHeight: newBladeHeight, // Store the target height
-            flowerColor: ['yellow', 'orange', 'pink', 'red',][Math.floor(Math.random() * 4)] // Assign a random flower color
+            flowerColor: ['yellow', 'orange', 'pink', 'red'][Math.floor(Math.random() * 4)] // Assign a random flower color
         });
 
         grassBlades[grassBlades.length - 1].height = newBladeHeight; // Immediately set the height for color calculation
@@ -535,7 +567,7 @@ function render() {
     // Draw the circle as a raindrop shape with rotation (move this to the end to ensure it's above other elements)
     ctx.save(); // Save the current canvas state
     ctx.translate(circle.x, circle.y); // Move the canvas origin to the circle's position
-    ctx.rotate(circleRotation); // Apply the rotation
+    ctx.rotate(circleRotation + (circle.isFlipped ? Math.PI : 0)); // Apply the rotation and flip if needed
     ctx.beginPath();
     ctx.moveTo(0, -circle.radius * 1.5); // Top point of the raindrop
     ctx.bezierCurveTo(

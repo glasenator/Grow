@@ -240,8 +240,12 @@ function updateGameState() {
         grassBlades.push({
             x: lastCircleX - circle.radius, // Use the tracked x position
             height: 0, // Start with height 0 for animation
-            targetHeight: newBladeHeight // Store the target height
+            targetHeight: newBladeHeight, // Store the target height
+            flowerColor: ['yellow', 'orange', 'pink', 'red',][Math.floor(Math.random() * 4)] // Assign a random flower color
         });
+
+        grassBlades[grassBlades.length - 1].height = newBladeHeight; // Immediately set the height for color calculation
+        updateGroundColor(); // Update the ground color based on the new blade of grass
     }
 
     // Update the lastCircleX position
@@ -251,6 +255,8 @@ function updateGameState() {
     if (grassBlades.some(blade => blade.height >= canvas.height)) {
         grassBlades = []; // Remove all blades of grass
         level++; // Increase the level
+
+        resetGroundColor(); // Reset the ground color to brown
 
         // Increase the lives by one
         lives++;
@@ -393,6 +399,23 @@ if (window.DeviceOrientationEvent) {
 
 let retryButtonListenerAdded = false; // Track if the retry button listener has been added
 
+let groundColor = { r: 139, g: 69, b: 19 }; // Initial brown color (RGB for saddle brown)
+
+// Function to update the ground color based on the height of the last blade of grass
+function updateGroundColor() {
+    const lastBlade = grassBlades[grassBlades.length - 1];
+    if (lastBlade) {
+        const heightFactor = Math.min(lastBlade.height / canvas.height, 1); // Normalize height to a value between 0 and 1
+        groundColor.g = Math.min(69 + Math.floor(186 * heightFactor), 255); // Gradually increase green (69 to 255)
+        groundColor.r = Math.max(139 - Math.floor(105 * heightFactor), 34); // Gradually decrease red (139 to 34)
+    }
+}
+
+// Function to reset the ground color to brown
+function resetGroundColor() {
+    groundColor = { r: 139, g: 69, b: 19 }; // Reset to saddle brown
+}
+
 function render() {
     // Apply the shake effect
     applyShakeEffect();
@@ -400,35 +423,22 @@ function render() {
     // Clear the canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Draw the ground
-    ctx.fillStyle = 'green';
-    ctx.fillRect(0, canvas.height - 20, canvas.width, 20); // Green rectangle at the bottom
+    // Draw the ground with the current color
+    ctx.fillStyle = `rgb(${groundColor.r}, ${groundColor.g}, ${groundColor.b})`;
+    ctx.fillRect(0, canvas.height - 20, canvas.width, 20); // Ground rectangle at the bottom
 
-    // Draw the circle as a raindrop shape with rotation
-    ctx.save(); // Save the current canvas state
-    ctx.translate(circle.x, circle.y); // Move the canvas origin to the circle's position
-    ctx.rotate(circleRotation); // Apply the rotation
-    ctx.beginPath();
-    ctx.moveTo(0, -circle.radius * 1.5); // Top point of the raindrop
-    ctx.bezierCurveTo(
-        -circle.radius, -circle.radius * 0.5, // Left control point
-        -circle.radius, circle.radius,     // Left bottom curve
-        0, circle.radius                   // Bottom center
-    );
-    ctx.bezierCurveTo(
-        circle.radius, circle.radius,     // Right bottom curve
-        circle.radius, -circle.radius * 0.5, // Right control point
-        0, -circle.radius * 1.5           // Back to top point
-    );
-    ctx.fillStyle = circle.color;
-    ctx.fill();
-    ctx.closePath();
-    ctx.restore(); // Restore the canvas state
-
-    // Draw grass blades
+    // Draw grass blades with flowers
     grassBlades.forEach(blade => {
+        // Draw the grass blade
         ctx.fillStyle = 'green';
         ctx.fillRect(blade.x, canvas.height - blade.height - 20, 10, blade.height); // Adjusted for ground height
+
+        // Draw the flower (circle) on top of the blade
+        ctx.beginPath();
+        ctx.arc(blade.x + 5, canvas.height - blade.height - 30, 25, 0, Math.PI * 2); // Circle centered on top of the blade
+        ctx.fillStyle = blade.flowerColor; // Use the precomputed flower color
+        ctx.fill();
+        ctx.closePath();
     });
 
     // Draw clouds
@@ -521,6 +531,27 @@ function render() {
 
         ctx.restore();
     });
+
+    // Draw the circle as a raindrop shape with rotation (move this to the end to ensure it's above other elements)
+    ctx.save(); // Save the current canvas state
+    ctx.translate(circle.x, circle.y); // Move the canvas origin to the circle's position
+    ctx.rotate(circleRotation); // Apply the rotation
+    ctx.beginPath();
+    ctx.moveTo(0, -circle.radius * 1.5); // Top point of the raindrop
+    ctx.bezierCurveTo(
+        -circle.radius, -circle.radius * 0.5, // Left control point
+        -circle.radius, circle.radius,     // Left bottom curve
+        0, circle.radius                   // Bottom center
+    );
+    ctx.bezierCurveTo(
+        circle.radius, circle.radius,     // Right bottom curve
+        circle.radius, -circle.radius * 0.5, // Right control point
+        0, -circle.radius * 1.5           // Back to top point
+    );
+    ctx.fillStyle = circle.color;
+    ctx.fill();
+    ctx.closePath();
+    ctx.restore(); // Restore the canvas state
 
     // Handle canvas border flash
     if (borderFlashTimer > 0) {

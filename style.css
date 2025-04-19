@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+
 
 body {
     margin: 0;
@@ -20,13 +20,24 @@ canvas {
     max-width: 600px;
 }
 
+#titleSection {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
 #gameTitle {
-    font-family: 'Pacifico', cursive;
+    font-family: Arial, sans-serif;
     color: white;
     text-align: center;
     margin: 20px 0;
     margin-bottom: 20px; /* Add spacing between the title and the canvas */
     font-size: 48px;
+}
+
+#audioControl {
+    display: flex;
+    align-items: end;
 }
 
 #controls {
@@ -63,7 +74,6 @@ canvas {
         height: 70vh;
     }
     #gameTitle {
-        font-family: 'Pacifico', cursive;
         color: white;
         text-align: center;
         margin: 10px 0;

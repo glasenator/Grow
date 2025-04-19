@@ -119,8 +119,16 @@ let shakeDuration = 0; // Duration of the shake effect
 let shakeIntensity = 5; // Intensity of the shake effect
 
 const birdSound = new Audio('bird.mp3'); // Load the bird sound file
+birdSound.volume = 0.3; // Set bird sound volume to 30%
 
 const dropSound = new Audio('drop.mp3'); // Load the drop sound file
+dropSound.volume = 0.3; // Set drop sound volume to 30%
+
+const bounceSound = new Audio('bounce.mp3'); // Load the bounce sound file
+bounceSound.volume = 0.3; // Set bounce sound volume to 30%
+
+const backgroundAudio = new Audio('background.mp3'); // Load the background music file
+backgroundAudio.loop = true; // Set the background music to loop
 
 // Preload and unlock audio on user interaction
 function unlockAudio(audioElement) {
@@ -140,6 +148,8 @@ function unlockAudio(audioElement) {
 // Unlock audio for drop and bird sounds
 unlockAudio(dropSound);
 unlockAudio(birdSound);
+unlockAudio(bounceSound);
+unlockAudio(backgroundAudio);
 
 // Ensure the audio file is fully loaded before playing
 dropSound.addEventListener('loadedmetadata', () => {
@@ -149,6 +159,30 @@ dropSound.addEventListener('loadedmetadata', () => {
 birdSound.addEventListener('loadedmetadata', () => {
     console.log('Bird sound loaded. Duration:', birdSound.duration);
 });
+
+bounceSound.addEventListener('loadedmetadata', () => {
+    console.log('Bounce sound loaded. Duration:', bounceSound.duration);
+});
+
+backgroundAudio.addEventListener('loadedmetadata', () => {
+    console.log('Background music loaded. Duration:', backgroundAudio.duration);
+});
+
+// Play background audio on first user interaction
+function enableBackgroundAudio() {
+    backgroundAudio.play().then(() => {
+        console.log('Background audio started.');
+    }).catch(error => {
+        console.error('Error playing background audio:', error);
+    });
+    document.removeEventListener('click', enableBackgroundAudio);
+    document.removeEventListener('touchstart', enableBackgroundAudio);
+}
+
+// Add event listeners for user interaction
+document.addEventListener('click', enableBackgroundAudio);
+document.addEventListener('touchstart', enableBackgroundAudio);
+document.addEventListener('mousemove', enableBackgroundAudio);
 
 function playRandomBirdSound() {
     if (!isFinite(birdSound.duration) || birdSound.duration <= 0.25) {
@@ -180,6 +214,23 @@ function playRandomDropSound() {
         dropSound.pause();
         dropSound.currentTime = 0; // Reset the audio to the beginning
     }, 250);
+}
+
+// Function to play a random 0.25-second sample of the bounce sound
+function playRandomBounceSound() {
+    if (!isFinite(bounceSound.duration) || bounceSound.duration <= 0.350) {
+        console.error('Bounce sound duration is not valid or too short.');
+        return;
+    }
+    const randomStartTime = Math.random() * (bounceSound.duration - 0.350); // Random start time, leaving 0.5 seconds buffer
+    bounceSound.currentTime = randomStartTime;
+    bounceSound.play().catch(error => console.error('Error playing bounce sound:', error));
+
+    // Stop the sound after 0.350 seconds
+    setTimeout(() => {
+        bounceSound.pause();
+        bounceSound.currentTime = 0; // Reset the audio to the beginning
+    }, 350);
 }
 
 function startGame() {
@@ -238,6 +289,7 @@ function updateGameState() {
         const distance = Math.sqrt((circle.x - flowerX) ** 2 + (circle.y - flowerY) ** 2);
 
         if (distance < circle.radius + 10) { // 10 is the flower's radius
+            playRandomBounceSound(); // Play a random bounce sound
             circle.speed = -Math.abs(circle.speed); // Reverse the direction of the circle
             circle.isFlipped = true; // Mark the circle as flipped
 
@@ -247,6 +299,12 @@ function updateGameState() {
             } else {
                 circle.x = flowerX + (circle.radius + 10); // Push to the right
             }
+
+            // Increase the flower size briefly
+            blade.flowerSize = 40; // Set a larger size
+            setTimeout(() => {
+                blade.flowerSize = 25; // Reset to the default size after 200ms
+            }, 200);
 
             setTimeout(() => {
                 circle.speed = Math.abs(circle.speed); // Restore the original direction after 200ms
@@ -273,7 +331,8 @@ function updateGameState() {
             x: lastCircleX - circle.radius, // Use the tracked x position
             height: 0, // Start with height 0 for animation
             targetHeight: newBladeHeight, // Store the target height
-            flowerColor: ['yellow', 'orange', 'pink', 'red'][Math.floor(Math.random() * 4)] // Assign a random flower color
+            flowerColor: ['gold', 'pink', 'navajowhite', 'lavenderblush', 'beige'][Math.floor(Math.random() * 5)], // Assign a random flower color
+            flowerSize: 25 // Set the initial flower size
         });
 
         grassBlades[grassBlades.length - 1].height = newBladeHeight; // Immediately set the height for color calculation
@@ -338,7 +397,14 @@ function updateGameState() {
     // Animate grass growth
     grassBlades.forEach(blade => {
         if (blade.height < blade.targetHeight) {
-            blade.height += 10; // Increased grass growth speed
+            blade.height += Math.min(10, blade.targetHeight - blade.height); // Smooth growth
+        }
+    });
+
+    // Animate flower size
+    grassBlades.forEach(blade => {
+        if (blade.flowerSize < 25) {
+            blade.flowerSize += Math.min(2, 25 - blade.flowerSize); // Smooth size increase
         }
     });
 
@@ -467,7 +533,7 @@ function render() {
 
         // Draw the flower (circle) on top of the blade
         ctx.beginPath();
-        ctx.arc(blade.x + 5, canvas.height - blade.height - 30, 25, 0, Math.PI * 2); // Circle centered on top of the blade
+        ctx.arc(blade.x + 5, canvas.height - blade.height - 30, blade.flowerSize, 0, Math.PI * 2); // Use dynamic flower size
         ctx.fillStyle = blade.flowerColor; // Use the precomputed flower color
         ctx.fill();
         ctx.closePath();
@@ -531,11 +597,14 @@ function render() {
             ctx.scale(-1, 1);
         }
 
-        // Draw the body (circle)
+        // Draw the body (circle) with a red outline
         ctx.beginPath();
         ctx.arc(0, 0, 20, 0, Math.PI * 2);
         ctx.fillStyle = bird.color;
         ctx.fill();
+        ctx.lineWidth = 2; // Set the outline width
+        ctx.strokeStyle = 'red'; // Set the outline color to red
+        ctx.stroke(); // Apply the outline
         ctx.closePath();
 
         // Draw the beak (triangle)
@@ -617,31 +686,15 @@ function render() {
 
         ctx.font = '32px Arial'; // Font size for final score
         ctx.fillText(`Final Score: ${score}`, canvas.width / 2, canvas.height / 2 + 20);
-
-        // Add retry button logic
-        if (!retryButtonListenerAdded) {
-            canvas.addEventListener('click', handleRetryClick);
-            retryButtonListenerAdded = true;
-        }
     }
 }
 
-function handleRetryClick(event) {
+// Remove click event logic for play/pause and retry buttons
+canvas.addEventListener('click', (event) => {
     const rect = canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-
-    // Check if the click is within the retry button area
-    if (
-        x >= canvas.width / 2 - 75 &&
-        x <= canvas.width / 2 + 75 &&
-        y >= canvas.height / 2 + 40 &&
-        y <= canvas.height / 2 + 90
-    ) {
-        canvas.removeEventListener('click', handleRetryClick); // Remove the event listener
-        location.reload(); // Reload the page to restart the game
-    }
-}
+});
 
 // Helper function to darken a color
 function shadeColor(color, percent) {
@@ -663,5 +716,10 @@ function applyShakeEffect() {
         canvas.style.transform = ''; // Reset the canvas position
     }
 }
+
+// Add a temporary size property to each grass blade for animation
+grassBlades.forEach(blade => {
+    blade.flowerSize = 25; // Default flower size
+});
 
 startGame();

@@ -7,11 +7,9 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <audio autoplay loop>
-        <source src="sound.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
-    <h1 id="gameTitle">Grow</h1>
+    <div id="titleSection">
+        <h1 id="gameTitle">Grow</h1>
+    </div>
     <canvas id="gameCanvas"></canvas>
     <div id="controls">
         <button id="moveLeft">
@@ -28,6 +26,7 @@
             <button id="denyCompass" style="font-size: 20px; padding: 10px;">No</button>
         </div>
     </div>
+    <audio id="backgroundAudio" src="background.mp3" loop></audio>
     <script src="script.js"></script>
     <script>
         // Show the compass permission overlay for iOS devices on mobile only

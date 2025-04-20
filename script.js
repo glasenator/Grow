@@ -177,12 +177,8 @@ function enableBackgroundAudio() {
     });
     document.removeEventListener('click', enableBackgroundAudio);
     document.removeEventListener('touchstart', enableBackgroundAudio);
+    document.removeEventListener('mousemove', enableBackgroundAudio);
 }
-
-// Add event listeners for user interaction
-document.addEventListener('click', enableBackgroundAudio);
-document.addEventListener('touchstart', enableBackgroundAudio);
-document.addEventListener('mousemove', enableBackgroundAudio);
 
 function playRandomBirdSound() {
     if (!isFinite(birdSound.duration) || birdSound.duration <= 0.25) {
@@ -597,14 +593,11 @@ function render() {
             ctx.scale(-1, 1);
         }
 
-        // Draw the body (circle) with a red outline
+        // Draw the body (circle)
         ctx.beginPath();
         ctx.arc(0, 0, 20, 0, Math.PI * 2);
         ctx.fillStyle = bird.color;
         ctx.fill();
-        ctx.lineWidth = 2; // Set the outline width
-        ctx.strokeStyle = 'red'; // Set the outline color to red
-        ctx.stroke(); // Apply the outline
         ctx.closePath();
 
         // Draw the beak (triangle)
